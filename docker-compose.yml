@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  postgresql:
+    container_name: postgresql
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: productDb
+    ports:
+      - "5432:5432"
+  app:
+    container_name: SpringBoot-Product-Thymeleaf
+    build: .
+    ports:
+      - "5555:5555"
+    environment:
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.show-sql=false
+      - spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+      - spring.jpa.properties.javax.persistence.validation.mode = none
+      - spring.datasource.url=jdbc:postgresql://localhost:5432/productDb
+      - spring.datasource.username=root
+      - spring.datasource.password=password
+      - spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=false
+      - spring.datasource.hikari.auto-commit=false
+    restart: always
+    depends_on:
+      - postgresql
